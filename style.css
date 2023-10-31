@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(224, 224, 224);
+  height: 100vh;
+  position: relative;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.gradebook {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+.gradebook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.gradebook-title {
+  font-size: 2rem;
+}
+
+.new-student-wrapper > * {
+  margin: 0 0.5rem;
+}
+
+i {
+  pointer-events: none;
+}
+
+.students-table {
+  background-color: white;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+}
+
+tr > :last-child {
+  width: 10%;
+  background-color: pink;
+}
+
+.popup-background {
+  background-color: rgba(70, 70, 180, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.grades-popup {
+  background-color: pink;
+  position: absolute;
+  width: 30rem;
+  min-height: 500px;
+  max-height: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+.hide {
+  display: none;
+}
+
+.student-grades-table > * {
+  /* display: block; */
+}
+
+.student-grades-table {
+  background-color: white;
+  width: 20rem;
+}
+
+.student-grades-table > thead {
+  /* position: fixed; */
+}
+
+.student-grades-table > tbody {
+  /* padding-top: 2rem;
+  max-height: 20rem;
+  overflow-y: scroll; */
+}
