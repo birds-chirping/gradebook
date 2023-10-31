@@ -1,4 +1,6 @@
 class StudentsData {
+  students;
+
   constructor(students) {
     this.students = this.createStudentsList(students);
   }
@@ -8,7 +10,6 @@ class StudentsData {
     students.forEach((student) => {
       studentsList.push(new Student(student));
     });
-    console.log(studentsList);
     return studentsList;
   }
 
@@ -51,6 +52,14 @@ class StudentsData {
     return this.students.find((student) => student.id == id);
   }
 
+  getStudentsSortedByName(sortType) {
+    return SortStudents.sortByName(this.students, sortType);
+  }
+
+  getStudentsSortedByGrade(sortType) {
+    return SortStudents.sortByGrade(this.students, sortType);
+  }
+
   bindNewStudent(callback) {
     this.onNewStudent = callback;
   }
@@ -77,7 +86,31 @@ class Student {
   }
 
   calculateAverage() {
-    return this.grades.length ? (this.grades.reduce((a, b) => a + b.value, 0) / this.grades.length).toFixed(2) : "-";
+    return this.grades.length
+      ? Number((this.grades.reduce((a, b) => a + b.value, 0) / this.grades.length).toFixed(2))
+      : 0;
+  }
+}
+
+class SortStudents {
+  static sortByName(students, sortType) {
+    if (sortType == "ascending") {
+      return [...students].sort((student1, student2) => student1.name.localeCompare(student2.name));
+    } else if (sortType == "descending") {
+      return [...students].sort((student1, student2) => student2.name.localeCompare(student1.name));
+    } else {
+      return students;
+    }
+  }
+
+  static sortByGrade(students, sortType) {
+    if (sortType == "ascending") {
+      return [...students].sort((student1, student2) => student1.averageGrade - student2.averageGrade);
+    } else if (sortType == "descending") {
+      return [...students].sort((student1, student2) => student2.averageGrade - student1.averageGrade);
+    } else {
+      return students;
+    }
   }
 }
 

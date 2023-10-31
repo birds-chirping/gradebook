@@ -1,15 +1,17 @@
-import { StudentsData } from "./student.js";
-import { GradebookInterface } from "./gradebook.js";
+import { StudentsData } from "./students.js";
+import { GradebookView } from "./gradebook.js";
 
 class Controller {
   constructor(students) {
     this.model = new StudentsData(students);
-    this.view = new GradebookInterface(document.querySelector(".container"));
+    this.view = new GradebookView(document.querySelector(".container"));
     this.view.bindAddStudent(this.handleAddStudent);
     this.view.bindRemoveStudent(this.handleRemoveStudent);
     this.view.bindAddGrade(this.handleAddGrade);
     this.view.bindRemoveGrade(this.handleRemoveGrade);
     this.view.bindGetStudent(this.handleGetStudent);
+    this.view.bindGetStudentsSortedByName(this.handleGetStudentsSortedByName);
+    this.view.bindGetStudentsSortedByGrade(this.handleGetStudentsSortedByGrade);
     this.model.bindNewStudent(this.onNewStudent);
     this.model.bindRemoveStudent(this.onRemoveStudent);
     this.model.bindNewGrade(this.onNewGrade);
@@ -49,6 +51,14 @@ class Controller {
 
   handleGetStudent = (id) => {
     return this.model.getStudent(id);
+  };
+
+  handleGetStudentsSortedByName = (sortType) => {
+    return this.model.getStudentsSortedByName(sortType);
+  };
+
+  handleGetStudentsSortedByGrade = (sortType) => {
+    return this.model.getStudentsSortedByGrade(sortType);
   };
 
   handleAddGrade = (id, grade) => {
@@ -102,4 +112,4 @@ const students = [
 ];
 
 const app = new Controller(students);
-// console.log(app);
+console.log(app);

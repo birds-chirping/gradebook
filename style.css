@@ -105,3 +105,23 @@ tr > :last-child {
   max-height: 20rem;
   overflow-y: scroll; */
 }
+
+.sortable::after {
+  content: "\f0dc";
+  font-family: "Font Awesome 5 Free";
+  font-size: 0.8rem;
+  position: relative;
+  left: 5px;
+}
+
+.sortable:hover::after {
+  color: blueviolet;
+}
+
+.sortable.ascending::after {
+  content: "\f0de";
+}
+
+.sortable.descending::after {
+  content: "\f0dd";
+}

@@ -1,19 +1,23 @@
-class GradebookInterface {
+class GradebookView {
+  parentContainer;
+  gradebookContainer;
+  gradebookTable;
+  newStudentInput;
+  newBtn;
+  popupBackground;
+  gradesPopup;
+  shownStudent;
   constructor(parentContainer) {
     this.parentContainer = parentContainer;
-    this.gradebookContainer;
-    this.gradebookTable;
-    this.newStudentInput;
-    this.newBtn;
-    this.popupBackground;
-    this.gradesPopup;
-    this.shownStudent;
     this.init();
   }
 
   init() {
     this.gradebookContainer = this._createElement("div", "gradebook");
-    this.gradebookTable = this.createTable(["Name", "Average", "Grades", "Delete students"], "students-table");
+    this.gradebookTable = this.createTable(
+      [["Name", "name sortable"], ["Average", "average-grade sortable"], ["Grades"], ["Delete students"]],
+      "students-table"
+    );
     this.gradebookContainer.append(this.createHeader(), this.gradebookTable);
     this.addPopup();
     this.addEvents();
@@ -27,8 +31,7 @@ class GradebookInterface {
   }
 
   _getElement(selector) {
-    const element = document.querySelector(selector);
-    return element;
+    return document.querySelector(selector);
   }
 
   //--------------------------gradeboook interface---------------------------
@@ -64,7 +67,8 @@ class GradebookInterface {
     const tHead = table.createTHead();
     const row = tHead.insertRow(0);
     for (let i = 0; i < headerData.length; i++) {
-      row.insertCell(i).outerHTML = `<th>${headerData[i]}</th>`;
+      const cell = row.insertCell(i);
+      cell.outerHTML = `<th class="${headerData[i][1]}">${headerData[i][0]}</th>`;
     }
     table.createTBody();
     return table;
@@ -97,22 +101,24 @@ class GradebookInterface {
     this.newGradeBtn.disabled = true;
     inputArea.append(this.newGradeInput, this.newGradeBtn);
     //grades table
-    this.studentGradesTable = this.createTable(["Grades", "Delete"], "student-grades-table");
+    this.studentGradesTable = this.createTable([["Grades", "grades sortable"], ["Delete"]], "student-grades-table");
 
     this.gradesPopup.append(this.popupCloseBtn, popupNameArea, inputArea, this.studentGradesTable);
   }
 
   //----------------------students table---------------------
   displayStudents(students) {
+    this.gradebookTable.tBodies[0].innerHTML = "";
     students.forEach((student) => this.addStudentRow(student));
   }
+
   addStudentRow(student) {
     const row = this.gradebookTable.tBodies[0].insertRow(-1);
     row.setAttribute("data-id", `${student.id}`);
 
     row.insertCell(0).textContent = student.name;
     const averageCell = row.insertCell(1);
-    averageCell.textContent = student.averageGrade;
+    averageCell.textContent = student.averageGrade != 0 ? student.averageGrade : "-";
     averageCell.id = `average_${student.id}`;
 
     const editBtn = this._createElement("button", "edit-btn");
@@ -151,11 +157,10 @@ class GradebookInterface {
 
   updateAverageGrade(studentID, averageGrade) {
     const cellToEdit = document.getElementById(`average_${studentID}`);
-    cellToEdit.textContent = averageGrade;
+    cellToEdit.textContent = averageGrade != 0 ? averageGrade : "-";
   }
 
   removeGradeRow(id) {
-    console.log(document.getElementById(`grade_${id}`));
     document.getElementById(`grade_${id}`).remove();
   }
 
@@ -187,19 +192,21 @@ class GradebookInterface {
     this.newGradeInput.addEventListener("input", this.onType.bind(this, this.newGradeBtn, this.newGradeInput));
     window.addEventListener("click", this.onClick.bind(this));
 
-    this.gradebookContainer.addEventListener("keyup", (e) => {
-      if (e.key === "Escape" && !this.popupBackground.classList.contains("hide")) {
-        this.popupToggle();
-      } else if (
-        e.key === "Enter" &&
-        !this.popupBackground.classList.contains("hide") &&
-        this.newGradeInput.value.trim()
-      ) {
-        this.onNewGradeButtonClick();
-      } else if (e.key === "Enter" && this.newStudentInput.value !== 0) {
-        this.onNewButtonClick();
-      }
-    });
+    this.gradebookContainer.addEventListener("keyup", this.onKeyUp.bind(this));
+  }
+
+  onKeyUp(e) {
+    if (e.key === "Escape" && !this.popupBackground.classList.contains("hide")) {
+      this.popupToggle();
+    } else if (
+      e.key === "Enter" &&
+      !this.popupBackground.classList.contains("hide") &&
+      this.newGradeInput.value.trim()
+    ) {
+      this.onNewGradeButtonClick();
+    } else if (e.key === "Enter" && this.newStudentInput.value !== 0) {
+      this.onNewButtonClick();
+    }
   }
 
   onType(button, input) {
@@ -228,7 +235,32 @@ class GradebookInterface {
       case e.target.classList.contains("new-grade-btn"):
         this.onNewGradeButtonClick();
         break;
+      case e.target.classList.contains("name") && e.target.classList.contains("sortable"):
+        this.displayStudents(this.getStudentsSortedByName(this.setTypeOfSort(e)));
+        break;
+      case e.target.classList.contains("average-grade") && e.target.classList.contains("sortable"):
+        this.displayStudents(this.getStudentsSortedByGrade(this.setTypeOfSort(e)));
+        break;
     }
+  }
+
+  setTypeOfSort(e) {
+    let typeOf;
+    switch (true) {
+      case e.target.classList.contains("ascending"):
+        e.target.classList.remove("ascending");
+        e.target.classList.add("descending");
+        typeOf = "descending";
+        break;
+      case e.target.classList.contains("descending"):
+        e.target.classList.remove("descending");
+        typeOf = "none";
+        break;
+      default:
+        e.target.classList.add("ascending");
+        typeOf = "ascending";
+    }
+    return typeOf;
   }
 
   onNewButtonClick() {
@@ -253,6 +285,14 @@ class GradebookInterface {
     this.getStudent = handler;
   }
 
+  bindGetStudentsSortedByName(handler) {
+    this.getStudentsSortedByName = handler;
+  }
+
+  bindGetStudentsSortedByGrade(handler) {
+    this.getStudentsSortedByGrade = handler;
+  }
+
   bindAddGrade(handler) {
     this.addGradeHandler = handler;
   }
@@ -262,4 +302,4 @@ class GradebookInterface {
   }
 }
 
-export { GradebookInterface };
+export { GradebookView };
