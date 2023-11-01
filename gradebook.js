@@ -237,14 +237,20 @@ class GradebookView {
         break;
       case e.target.classList.contains("name") && e.target.classList.contains("sortable"):
         this.displayStudents(this.getStudentsSortedByName(this.setSortType(e)));
+        this.resetArrows(this._getElement(".average-grade"));
         break;
       case e.target.classList.contains("average-grade") && e.target.classList.contains("sortable"):
         this.displayStudents(this.getStudentsSortedByGrade(this.setSortType(e)));
+        this.resetArrows(this._getElement(".name"));
         break;
       case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
         this.addGradesToTable(this.getSortedGrades(this.shownStudent, this.setSortType(e)));
-      // break;
     }
+  }
+
+  resetArrows(element) {
+    element.classList.remove("ascending");
+    element.classList.remove("descending");
   }
 
   onNewStudentBtnClick() {
