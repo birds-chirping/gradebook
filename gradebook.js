@@ -41,9 +41,9 @@ class GradebookView {
     const title = this._createElement("div", "gradebook-title");
     title.textContent = "Gradebook";
 
-    const newStudentWrapper = this.createHeaderInputArea();
+    const newStudentArea = this.createHeaderInputArea();
 
-    header.append(title, newStudentWrapper);
+    header.append(title, newStudentArea);
     return header;
   }
 
@@ -68,7 +68,7 @@ class GradebookView {
     const row = tHead.insertRow(0);
     for (let i = 0; i < headerData.length; i++) {
       const cell = row.insertCell(i);
-      cell.outerHTML = `<th class="${headerData[i][1]}">${headerData[i][0]}</th>`;
+      cell.outerHTML = `<th class="${headerData[i][1] || ""}">${headerData[i][0]}</th>`;
     }
     table.createTBody();
     return table;
@@ -192,7 +192,6 @@ class GradebookView {
     this.newStudentInput.addEventListener("input", this.onType.bind(this, this.newBtn, this.newStudentInput));
     this.newGradeInput.addEventListener("input", this.onType.bind(this, this.newGradeBtn, this.newGradeInput));
     window.addEventListener("click", this.onClick.bind(this));
-
     this.gradebookContainer.addEventListener("keyup", this.onKeyUp.bind(this));
   }
 
@@ -206,7 +205,7 @@ class GradebookView {
     ) {
       this.onNewGradeButtonClick();
     } else if (e.key === "Enter" && this.newStudentInput.value !== 0) {
-      this.onNewButtonClick();
+      this.onNewStudentBtnClick();
     }
   }
 
@@ -217,7 +216,7 @@ class GradebookView {
   onClick(e) {
     switch (true) {
       case e.target.classList.contains("new-student-btn"):
-        this.onNewButtonClick();
+        this.onNewStudentBtnClick();
         break;
       case e.target.classList.contains("delete-btn"):
         if (e.target.classList.contains("student")) this.removeStudentHandler(e.target.getAttribute("data-id"));
@@ -237,37 +236,18 @@ class GradebookView {
         this.onNewGradeButtonClick();
         break;
       case e.target.classList.contains("name") && e.target.classList.contains("sortable"):
-        this.displayStudents(this.getStudentsSortedByName(this.setTypeOfSort(e)));
+        this.displayStudents(this.getStudentsSortedByName(this.setSortType(e)));
         break;
       case e.target.classList.contains("average-grade") && e.target.classList.contains("sortable"):
-        this.displayStudents(this.getStudentsSortedByGrade(this.setTypeOfSort(e)));
+        this.displayStudents(this.getStudentsSortedByGrade(this.setSortType(e)));
         break;
       case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
-        this.addGradesToTable(this.getSortedGrades(this.shownStudent, this.setTypeOfSort(e)));
-        break;
+        this.addGradesToTable(this.getSortedGrades(this.shownStudent, this.setSortType(e)));
+      // break;
     }
   }
 
-  setTypeOfSort(e) {
-    let typeOf;
-    switch (true) {
-      case e.target.classList.contains("ascending"):
-        e.target.classList.remove("ascending");
-        e.target.classList.add("descending");
-        typeOf = "descending";
-        break;
-      case e.target.classList.contains("descending"):
-        e.target.classList.remove("descending");
-        typeOf = "none";
-        break;
-      default:
-        e.target.classList.add("ascending");
-        typeOf = "ascending";
-    }
-    return typeOf;
-  }
-
-  onNewButtonClick() {
+  onNewStudentBtnClick() {
     this.addStudentHandler(this.newStudentInput.value);
     this.clearStudentInput();
   }
@@ -277,34 +257,48 @@ class GradebookView {
     this.clearGradesInput();
   }
 
+  setSortType(e) {
+    let sortType;
+    switch (true) {
+      case e.target.classList.contains("ascending"):
+        e.target.classList.remove("ascending");
+        e.target.classList.add("descending");
+        sortType = "descending";
+        break;
+      case e.target.classList.contains("descending"):
+        e.target.classList.remove("descending");
+        sortType = "none";
+        break;
+      default:
+        e.target.classList.add("ascending");
+        sortType = "ascending";
+    }
+    return sortType;
+  }
+
+  // ------------------------handlers------------------------
+
   bindAddStudent(handler) {
     this.addStudentHandler = handler;
   }
-
   bindRemoveStudent(handler) {
     this.removeStudentHandler = handler;
   }
-
   bindGetStudent(handler) {
     this.getStudent = handler;
   }
-
   bindGetStudentsSortedByName(handler) {
     this.getStudentsSortedByName = handler;
   }
-
   bindGetStudentsSortedByGrade(handler) {
     this.getStudentsSortedByGrade = handler;
   }
-
   bindGetSortedGrades(handler) {
     this.getSortedGrades = handler;
   }
-
   bindAddGrade(handler) {
     this.addGradeHandler = handler;
   }
-
   bindRemoveGrade(handler) {
     this.removeGradeHandler = handler;
   }
