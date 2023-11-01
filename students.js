@@ -26,7 +26,7 @@ class StudentsData {
   }
 
   addGrade(studentID, grade) {
-    const student = this.students.find((student) => student.id == studentID);
+    const student = this.getStudent(studentID);
     const gradeObject = {
       id: student.grades.length > 0 ? student.grades[student.grades.length - 1].id + 1 : 1,
       value: Number(grade),
@@ -38,7 +38,7 @@ class StudentsData {
   }
 
   removeGrade(studentID, gradeID) {
-    const student = this.students.find((student) => student.id == studentID);
+    const student = this.getStudent(studentID);
     student.grades = student.grades.filter((grade) => grade.id != gradeID);
     const averageGrade = this.updateAverageGrade(student);
     this.onRemoveGrade(studentID, gradeID, averageGrade);
@@ -58,6 +58,10 @@ class StudentsData {
 
   getStudentsSortedByGrade(sortType) {
     return SortStudents.sortByGrade(this.students, sortType);
+  }
+
+  getSortedGrades(studentID, sortType) {
+    return SortStudents.sortStudentGrades(this.getStudent(studentID), sortType);
   }
 
   bindNewStudent(callback) {
@@ -94,9 +98,9 @@ class Student {
 
 class SortStudents {
   static sortByName(students, sortType) {
-    if (sortType == "ascending") {
+    if (sortType === "ascending") {
       return [...students].sort((student1, student2) => student1.name.localeCompare(student2.name));
-    } else if (sortType == "descending") {
+    } else if (sortType === "descending") {
       return [...students].sort((student1, student2) => student2.name.localeCompare(student1.name));
     } else {
       return students;
@@ -104,12 +108,22 @@ class SortStudents {
   }
 
   static sortByGrade(students, sortType) {
-    if (sortType == "ascending") {
+    if (sortType === "ascending") {
       return [...students].sort((student1, student2) => student1.averageGrade - student2.averageGrade);
-    } else if (sortType == "descending") {
+    } else if (sortType === "descending") {
       return [...students].sort((student1, student2) => student2.averageGrade - student1.averageGrade);
     } else {
       return students;
+    }
+  }
+
+  static sortStudentGrades(student, sortType) {
+    if (sortType === "ascending") {
+      return [...student.grades].sort((grade1, grade2) => grade1.value - grade2.value);
+    } else if (sortType === "descending") {
+      return [...student.grades].sort((grade1, grade2) => grade2.value - grade1.value);
+    } else {
+      return student.grades;
     }
   }
 }

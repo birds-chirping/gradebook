@@ -142,6 +142,7 @@ class GradebookView {
 
   //-------------------------popup table-------------------------
   addGradesToTable(grades) {
+    this.studentGradesTable.tBodies[0].innerHTML = "";
     grades.forEach((grade) => this.addGradesRow(grade.value, grade.id));
   }
 
@@ -241,6 +242,9 @@ class GradebookView {
       case e.target.classList.contains("average-grade") && e.target.classList.contains("sortable"):
         this.displayStudents(this.getStudentsSortedByGrade(this.setTypeOfSort(e)));
         break;
+      case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
+        this.addGradesToTable(this.getSortedGrades(this.shownStudent, this.setTypeOfSort(e)));
+        break;
     }
   }
 
@@ -291,6 +295,10 @@ class GradebookView {
 
   bindGetStudentsSortedByGrade(handler) {
     this.getStudentsSortedByGrade = handler;
+  }
+
+  bindGetSortedGrades(handler) {
+    this.getSortedGrades = handler;
   }
 
   bindAddGrade(handler) {

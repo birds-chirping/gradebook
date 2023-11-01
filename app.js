@@ -12,6 +12,7 @@ class Controller {
     this.view.bindGetStudent(this.handleGetStudent);
     this.view.bindGetStudentsSortedByName(this.handleGetStudentsSortedByName);
     this.view.bindGetStudentsSortedByGrade(this.handleGetStudentsSortedByGrade);
+    this.view.bindGetSortedGrades(this.handleGetSortedGrades);
     this.model.bindNewStudent(this.onNewStudent);
     this.model.bindRemoveStudent(this.onRemoveStudent);
     this.model.bindNewGrade(this.onNewGrade);
@@ -61,6 +62,9 @@ class Controller {
     return this.model.getStudentsSortedByGrade(sortType);
   };
 
+  handleGetSortedGrades = (studentID, sortType) => {
+    return this.model.getSortedGrades(studentID, sortType);
+  };
   handleAddGrade = (id, grade) => {
     this.model.addGrade(id, grade);
   };
