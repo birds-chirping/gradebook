@@ -18,7 +18,9 @@ class GradebookView {
       [["Name", "name sortable"], ["Average", "average-grade sortable"], ["Grades"], ["Delete students"]],
       "students-table"
     );
-    this.gradebookContainer.append(this.createHeader(), this.gradebookTable);
+    const tableWrapper = this._createElement("div", "students-table-wrapper");
+    tableWrapper.append(this.gradebookTable);
+    this.gradebookContainer.append(this.createHeader(), tableWrapper);
     this.addPopup();
     this.addEvents();
     this.parentContainer.appendChild(this.gradebookContainer);
@@ -84,26 +86,37 @@ class GradebookView {
   addPopupStructure() {
     //buton close:
     this.popupCloseBtn = this._createElement("button", "close-popup-btn");
-    this.popupCloseBtn.textContent = "Close";
+    this.popupCloseBtn.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
     //name
     const popupNameArea = this._createElement("div", "popup-name-area");
-    const popupNameLabel = this._createElement("h2", "popup-name-label");
+    const popupNameLabel = this._createElement("div", "popup-name-label");
     popupNameLabel.textContent = "Student: ";
     this.popupNameField = this._createElement("div", "popup-name-field");
     popupNameArea.append(popupNameLabel, this.popupNameField);
+    //average grade area
+    const popupAverageGradeArea = this._createElement("div", "popup-avg-area");
+    const popupAverageGradeLabel = this._createElement("div", "popup-avg-label");
+    popupAverageGradeLabel.textContent = "Average grade: ";
+    this.popupAverageGradeField = this._createElement("div", "popup-avg-field");
+    popupAverageGradeArea.append(popupAverageGradeLabel, this.popupAverageGradeField);
     //input area
-    const inputArea = this._createElement("div", "grades-input-wrapper");
+    const inputArea = this._createElement("div", "newgrade-input-wrapper");
     this.newGradeInput = this._createElement("input", "new-grade-input");
     this.newGradeInput.placeholder = "Grade";
     this.newGradeInput.type = "number";
+    this.newGradeInput.min = "1";
+    this.newGradeInput.max = "10";
+    this.newGradeInput.step = ".01";
     this.newGradeBtn = this._createElement("button", "new-grade-btn");
     this.newGradeBtn.textContent = "Add grade";
     this.newGradeBtn.disabled = true;
     inputArea.append(this.newGradeInput, this.newGradeBtn);
     //grades table
     this.studentGradesTable = this.createTable([["Grades", "grades sortable"], ["Delete"]], "student-grades-table");
+    const tableWrapper = this._createElement("div", "grades-table-wrapper");
+    tableWrapper.appendChild(this.studentGradesTable);
 
-    this.gradesPopup.append(this.popupCloseBtn, popupNameArea, inputArea, this.studentGradesTable);
+    this.gradesPopup.append(this.popupCloseBtn, popupNameArea, popupAverageGradeArea, inputArea, tableWrapper);
   }
 
   //----------------------students table---------------------
@@ -157,6 +170,7 @@ class GradebookView {
   }
 
   updateAverageGrade(studentID, averageGrade) {
+    this.popupAverageGradeField.textContent = averageGrade != 0 ? averageGrade : "-";
     const cellToEdit = document.getElementById(`average_${studentID}`);
     cellToEdit.textContent = averageGrade != 0 ? averageGrade : "-";
   }
@@ -168,10 +182,12 @@ class GradebookView {
   //-----------------------popup--------------------------
   fillPopup(student) {
     this.popupNameField.textContent = student.name;
+    this.popupAverageGradeField.textContent = student.averageGrade != 0 ? student.averageGrade : "-";
     this.addGradesToTable(student.grades);
   }
 
   clearPopupData() {
+    this._getElement(".grades").classList = "grades sortable";
     this.popupNameField.textContent = "";
     this.studentGradesTable.tBodies[0].innerHTML = "";
     this.clearGradesInput();
@@ -198,19 +214,15 @@ class GradebookView {
   onKeyUp(e) {
     if (e.key === "Escape" && !this.popupBackground.classList.contains("hide")) {
       this.popupToggle();
-    } else if (
-      e.key === "Enter" &&
-      !this.popupBackground.classList.contains("hide") &&
-      this.newGradeInput.value.trim()
-    ) {
+    } else if (e.key === "Enter" && this.newGradeInput.value && this.newGradeInput.validity.valid) {
       this.onNewGradeButtonClick();
-    } else if (e.key === "Enter" && this.newStudentInput.value !== 0) {
+    } else if (e.key === "Enter" && this.newStudentInput.value.trim().length !== 0) {
       this.onNewStudentBtnClick();
     }
   }
 
   onType(button, input) {
-    button.disabled = input.value.trim().length === 0;
+    button.disabled = input.value.trim().length === 0 || !input.validity.valid;
   }
 
   onClick(e) {
@@ -249,8 +261,7 @@ class GradebookView {
   }
 
   resetArrows(element) {
-    element.classList.remove("ascending");
-    element.classList.remove("descending");
+    element.classList.remove("ascending", "descending");
   }
 
   onNewStudentBtnClick() {

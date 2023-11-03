@@ -6,23 +6,29 @@
 
 body {
   height: 100vh;
+  display: flex;
+  justify-content: center;
   position: relative;
   background-color: rgb(234, 232, 232);
   font-family: "Poppins", Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.gradebook {
   width: 80%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: center;
   margin: 1rem;
+}
+
+/* ------------------gradebook------------------------ */
+
+.gradebook {
+  width: 100%;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   padding: 1rem;
   background-color: white;
 }
@@ -35,7 +41,7 @@ body {
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 4px;
-  background-color: rgb(250, 247, 251);
+  background-color: rgb(251, 250, 249);
 }
 
 .gradebook-title {
@@ -43,27 +49,29 @@ body {
   color: rgb(69, 69, 69);
 }
 
+/* ------------input areas-------------- */
+.newgrade-input-wrapper,
 .new-student-wrapper {
   display: flex;
   flex-wrap: nowrap;
   gap: 1rem;
 }
-.new-student-wrapper > * {
-  /* margin: 0 0.5rem; */
-}
 
+.new-grade-input,
 .new-student-input {
   padding: 0.3rem;
-  border-radius: 3px;
   border: 1px solid rgb(219, 219, 219);
+  border-radius: 3px;
   font-family: "Poppins", Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.new-grade-input:focus,
 .new-student-input:focus {
   outline: none;
   border: 1px solid rgb(97, 197, 164);
 }
 
+.new-grade-btn,
 .new-student-btn {
   width: 8rem;
   padding: 0.3rem 1rem;
@@ -73,19 +81,24 @@ body {
   border-radius: 4px;
   font-family: "Poppins", Verdana, Geneva, Tahoma, sans-serif;
   font-weight: 400;
+  cursor: pointer;
 }
 
+.new-grade-btn:not(:disabled):hover,
 .new-student-btn:not(:disabled):hover {
   color: rgb(58, 177, 137);
   background-color: rgba(60, 179, 114, 0.15);
   border: 2px solid rgb(58, 177, 137);
 }
 
+.new-grade-btn:disabled,
 .new-student-btn:disabled {
   color: rgba(138, 200, 179, 0.4);
   border: 2px solid rgba(135, 204, 181, 0.3);
+  cursor: default;
 }
 
+/* -------tables-------- */
 i {
   pointer-events: none;
 }
@@ -93,11 +106,6 @@ i {
 table {
   border-collapse: collapse;
   color: rgb(84, 84, 84);
-}
-
-.students-table {
-  width: 100%;
-  background-color: white;
 }
 
 th,
@@ -108,7 +116,7 @@ td {
 }
 
 tr:hover {
-  background-color: rgba(246, 246, 244, 0.3);
+  background-color: hsl(60, 10%, 98%);
 }
 
 th {
@@ -117,95 +125,202 @@ th {
   background-color: rgb(251, 250, 249);
 }
 
-td {
-  padding: 0.5rem;
+/* ------students table------ */
+.students-table {
+  width: 100%;
+  background-color: white;
 }
 
 .edit-btn {
+  height: 2.3rem;
+  width: 100%;
   padding: 0.3rem 1rem;
-  color: rgba(255, 193, 77, 0.8);
-  background-color: rgba(255, 183, 49, 0.1);
-  border: 2px solid rgba(255, 166, 0, 0.5);
+  color: rgb(255, 182, 48);
+  background-color: transparent;
+  border: 2px solid transparent;
   border-radius: 4px;
+  text-wrap: nowrap;
+  cursor: pointer;
 }
 
 .edit-btn:hover {
   color: orange;
-  background-color: rgba(255, 166, 0, 0.15);
+  background-color: rgb(255, 246, 230);
   border: 2px solid orange;
 }
 
+.delete-btn i {
+  font-weight: 100;
+}
+
 .delete-btn {
+  height: 2.3rem;
+  width: 100%;
   padding: 0.3rem 1rem;
-  color: rgba(199, 21, 95, 0.3);
-  background-color: rgba(199, 21, 92, 0.08);
-  border: 2px solid rgba(199, 21, 95, 0.3);
+  color: rgb(255, 133, 147);
+  background-color: transparent;
+  border: 2px solid transparent;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .delete-btn:hover {
-  color: rgba(199, 21, 95, 0.5);
-  background-color: rgba(199, 21, 92, 0.15);
-  border: 2px solid rgba(199, 21, 95, 0.5);
+  color: rgb(255, 104, 122);
+  background-color: rgb(255, 243, 245);
+  border: 2px solid rgb(255, 104, 122);
 }
 
+/* ----------------popup------------ */
 .popup-background {
-  background-color: rgba(70, 70, 180, 0.3);
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100vw;
   height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(34, 34, 82, 0.3);
 }
 
 .grades-popup {
-  background-color: pink;
-  position: absolute;
   width: 30rem;
-  min-height: 500px;
-  max-height: 70%;
+  height: 35rem;
+  max-height: 35rem;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
   padding: 2rem;
-  gap: 1rem;
-}
-
-.hide {
-  display: none;
-}
-
-.student-grades-table > * {
-  /* display: block; */
-}
-
-.student-grades-table {
+  color: rgb(69, 69, 69);
   background-color: white;
+  border-radius: 7px;
+  box-shadow: 0px 0px 10px rgba(51, 51, 51, 0.3);
+}
+
+/* ---close button--- */
+.close-popup-btn {
+  align-self: flex-end;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.fa-circle-xmark {
+  font-size: 1.3rem;
+  color: rgb(255, 104, 122);
+}
+
+.close-popup-btn:hover > .fa-circle-xmark {
+  font-weight: 700;
+  color: rgb(255, 104, 122);
+}
+
+/* ----student name & average grade---- */
+.popup-avg-area,
+.popup-name-area {
+  display: flex;
+  gap: 1rem;
+  align-self: flex-start;
+}
+
+.popup-name-field {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: rgb(38, 38, 38);
+}
+
+.popup-avg-field {
+  font-weight: 700;
+  color: rgb(38, 38, 38);
+}
+
+/* ----popup input---- */
+.newgrade-input-wrapper {
+  width: 80%;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  margin-top: 1rem;
+}
+
+.new-grade-input {
+  width: 3.3rem;
+  -moz-appearance: textfield;
+}
+.new-grade-input::-webkit-outer-spin-button,
+.new-grade-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.new-grade-input::placeholder {
+  font-size: 0.8rem;
+}
+
+.new-grade-btn {
+  padding: 0.2rem;
+  width: fit-content;
+}
+
+/* --------grades table-------- */
+.grades-table-wrapper {
+  flex: 1;
   width: 20rem;
+  margin: 1.2rem 0;
+  border: 1px solid rgb(238, 238, 238);
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
-.student-grades-table > thead {
-  /* position: fixed; */
+.student-grades-table th,
+.student-grades-table td {
+  border: none;
 }
 
-.student-grades-table > tbody {
-  /* padding-top: 2rem;
-  max-height: 20rem;
-  overflow-y: scroll; */
+.student-grades-table th {
+  position: sticky;
+  top: 0;
+}
+
+.student-grades-table tbody tr {
+  border-bottom: 1px solid rgb(243, 243, 243);
+}
+
+/* ---scrollbar--- */
+div::-webkit-scrollbar {
+  width: 8px;
+}
+div::-webkit-scrollbar-track {
+  background: rgb(236, 236, 236);
+}
+div::-webkit-scrollbar-thumb {
+  background: rgb(179, 168, 202);
+}
+div::-webkit-scrollbar-thumb:hover {
+  background: rgb(199, 190, 217);
+}
+
+/* ------------------------------- */
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:hover {
+  color: orange;
 }
 
 .sortable::after {
   content: "\f0dc";
   font-family: "Font Awesome 5 Free";
   font-size: 0.8rem;
+  color: rgba(84, 84, 84, 0.5);
   position: relative;
   left: 5px;
 }
 
-.sortable:hover {
+.sortable.ascending,
+.sortable.descending {
   color: orange;
 }
 
@@ -217,4 +332,8 @@ td {
 .sortable.descending::after {
   content: "\f0dd";
   color: orange;
+}
+
+.hide {
+  display: none;
 }
