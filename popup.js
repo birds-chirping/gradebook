@@ -10,7 +10,7 @@ export class Popup {
   gradesTable;
 
   constructor() {
-    this.overlay = Utils.createElement("div", "popup-overlay", "hide");
+    this.overlayBackground = Utils.createElement("div", "popup-overlay-background", "hide");
     this.frame = Utils.createElement("div", "popup-frame", "hide");
     this.addPopupElements();
   }
@@ -88,6 +88,10 @@ export class Popup {
     this.gradesTable.removeRow(`grade_${id}`);
   }
 
+  clearTableData() {
+    this.gradesTable.removeAllRows();
+  }
+
   clearPopupData() {
     Utils.getElement(".grades").classList = "grades sortable";
     this.studentNameField.textContent = "";
@@ -101,7 +105,7 @@ export class Popup {
   }
 
   popupToggle() {
-    this.overlay.classList.toggle("hide");
+    this.overlayBackground.classList.toggle("hide");
     this.frame.classList.toggle("hide");
   }
 }

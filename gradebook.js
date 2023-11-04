@@ -80,7 +80,7 @@ class GradebookView {
 
   addPopup() {
     this.popup = new Popup();
-    this.gradebookContainer.append(this.popup.overlay, this.popup.frame);
+    this.gradebookContainer.append(this.popup.overlayBackground, this.popup.frame);
   }
 
   //----------------------students table---------------------
@@ -149,7 +149,7 @@ class GradebookView {
   }
 
   onKeyUp(e) {
-    if (e.key === "Escape" && !this.popup.overlay.classList.contains("hide")) {
+    if (e.key === "Escape" && !this.popup.overlayBackground.classList.contains("hide")) {
       this.popup.clearPopupData();
 
       this.popup.popupToggle();
@@ -180,7 +180,7 @@ class GradebookView {
         this.shownStudent = e.target.getAttribute("data-id");
         this.fillPopup(this.getStudent(this.shownStudent));
         break;
-      case e.target.classList.contains("popup-overlay") || e.target.classList.contains("close-popup-btn"):
+      case e.target.classList.contains("popup-overlay-background") || e.target.classList.contains("close-popup-btn"):
         this.popup.clearPopupData();
         this.popup.popupToggle();
         break;
@@ -196,6 +196,7 @@ class GradebookView {
         Table.resetArrows(this._getElement(".name"));
         break;
       case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
+        this.popup.clearTableData();
         this.popup.addGradesToTable(this.getSortedGrades(this.shownStudent, Table.setSortType(e.target)));
         break;
     }
