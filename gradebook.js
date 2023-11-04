@@ -1,5 +1,5 @@
 import { Popup } from "./popup.js";
-import { Table } from "./utils.js";
+import { Table } from "./Table.js";
 
 class GradebookView {
   parentContainer;

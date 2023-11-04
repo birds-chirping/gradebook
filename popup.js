@@ -1,4 +1,5 @@
-import { Utils, Table } from "./utils.js";
+import { Utils } from "./utils.js";
+import { Table } from "./Table.js";
 
 export class Popup {
   popupCloseBtn;
