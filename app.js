@@ -33,12 +33,12 @@ class Controller {
   };
 
   onNewGrade = (studentID, grade, averageGrade) => {
-    this.view.addGradesRow(grade.value, grade.id);
+    this.view.addGradeToTable(grade.value, grade.id);
     this.view.updateAverageGrade(studentID, averageGrade);
   };
 
   onRemoveGrade = (studentID, id, averageGrade) => {
-    this.view.removeGradeRow(id);
+    this.view.removeGradeFromTable(id);
     this.view.updateAverageGrade(studentID, averageGrade);
   };
 
