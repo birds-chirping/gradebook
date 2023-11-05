@@ -40,7 +40,7 @@ class Controller {
 
   onRemoveGrade = (studentID, id, averageGrade) => {
     this.view.removeGradeFromTable(id);
-    this.view.updatePopupAverageGrade(studentID, averageGrade);
+    this.view.updatePopupAverageGrade(averageGrade);
     this.view.updateGradebookAverageGrade(studentID, averageGrade);
   };
 

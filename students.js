@@ -21,7 +21,7 @@ class StudentsData {
   }
 
   removeStudent(id) {
-    this.students = this.students.filter((student) => student.id != id);
+    this.students = this.students.filter((student) => student.id.toString() !== id);
     this.onRemoveStudent(id);
   }
 
@@ -39,7 +39,7 @@ class StudentsData {
 
   removeGrade(studentID, gradeID) {
     const student = this.getStudent(studentID);
-    student.grades = student.grades.filter((grade) => grade.id != gradeID);
+    student.grades = student.grades.filter((grade) => grade.id.toString() !== gradeID);
     const averageGrade = this.updateAverageGrade(student);
     this.onRemoveGrade(studentID, gradeID, averageGrade);
   }
@@ -49,7 +49,7 @@ class StudentsData {
   }
 
   getStudent(id) {
-    return this.students.find((student) => student.id == id);
+    return this.students.find((student) => student.id.toString() === id);
   }
 
   getStudentsSortedByName(sortType) {
