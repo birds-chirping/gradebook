@@ -225,6 +225,7 @@ th {
 .popup-average-grade-area,
 .popup-name-area {
   display: flex;
+  align-items: flex-end;
   gap: 1rem;
   align-self: flex-start;
 }

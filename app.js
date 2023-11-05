@@ -1,9 +1,10 @@
-import { StudentsData } from "./students.js";
-import { GradebookView } from "./gradebook.js";
+import { studentsData } from "./student-data/students-data.js";
+import { Students } from "./student-data/students.js";
+import { GradebookView } from "./gradebook-view/gradebook.js";
 
 class Controller {
   constructor(students) {
-    this.model = new StudentsData(students);
+    this.model = new Students(students);
     this.view = new GradebookView(document.querySelector(".container"));
     this.view.bindAddStudent(this.handleAddStudent);
     this.view.bindRemoveStudent(this.handleRemoveStudent);
@@ -76,46 +77,5 @@ class Controller {
   };
 }
 
-const students = [
-  {
-    id: 1,
-    name: "Stefan",
-    grades: [
-      { id: 1, value: 10 },
-      { id: 2, value: 10 },
-      { id: 3, value: 7 },
-    ],
-  },
-  {
-    id: 2,
-    name: "Valentin",
-    grades: [
-      { id: 1, value: 10 },
-      { id: 2, value: 9 },
-      { id: 3, value: 9 },
-    ],
-  },
-  { id: 3, name: "Maria", grades: [], averageGrade: "-" },
-  {
-    id: 4,
-    name: "Oana",
-    grades: [
-      { id: 1, value: 8 },
-      { id: 2, value: 10 },
-      { id: 3, value: 7 },
-      { id: 4, value: 10 },
-    ],
-  },
-  {
-    id: 5,
-    name: "Robert",
-    grades: [
-      { id: 1, value: 6 },
-      { id: 2, value: 7 },
-      { id: 3, value: 8 },
-    ],
-  },
-];
-
-const app = new Controller(students);
+const app = new Controller(studentsData);
 console.log(app);
