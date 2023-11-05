@@ -25,21 +25,23 @@ class Controller {
   }
 
   onNewStudent = (student) => {
-    this.view.addStudentRow(student);
+    this.view.addStudentToTable(student);
   };
 
   onRemoveStudent = (id) => {
-    this.view.removeStudentRow(id);
+    this.view.removeStudentFromTable(id);
   };
 
   onNewGrade = (studentID, grade, averageGrade) => {
     this.view.addGradeToTable(grade.value, grade.id);
-    this.view.updateAverageGrade(studentID, averageGrade);
+    this.view.updatePopupAverageGrade(averageGrade);
+    this.view.updateGradebookAverageGrade(studentID, averageGrade);
   };
 
   onRemoveGrade = (studentID, id, averageGrade) => {
     this.view.removeGradeFromTable(id);
-    this.view.updateAverageGrade(studentID, averageGrade);
+    this.view.updatePopupAverageGrade(studentID, averageGrade);
+    this.view.updateGradebookAverageGrade(studentID, averageGrade);
   };
 
   handleAddStudent = (studentName) => {

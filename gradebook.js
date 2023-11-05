@@ -1,5 +1,6 @@
 import { Popup } from "./popup.js";
-import { Table } from "./Table.js";
+import { Table } from "./table.js";
+import { Utils } from "./utils.js";
 
 class GradebookView {
   parentContainer;
@@ -9,56 +10,37 @@ class GradebookView {
   newBtn;
   shownStudent;
   popup;
+
   constructor(parentContainer) {
     this.parentContainer = parentContainer;
     this.init();
   }
 
   init() {
-    this.gradebookContainer = this._createElement("div", "gradebook");
-    this.gradebookTable = this.createTable(
-      [["Name", "name sortable"], ["Average", "average-grade sortable"], ["Grades"], ["Delete"]],
-      "students-table"
-    );
-    const tableWrapper = this._createElement("div", "students-table-wrapper");
-    tableWrapper.append(this.gradebookTable);
-    this.gradebookContainer.append(this.createHeader(), tableWrapper);
+    this.gradebookContainer = Utils.createElement("div", "gradebook");
+    this.gradebookContainer.append(this.createHeader(), this.createTable());
+    this.parentContainer.appendChild(this.gradebookContainer);
     this.addPopup();
     this.addEvents();
-    this.parentContainer.appendChild(this.gradebookContainer);
   }
-
-  _createElement(tag, ...className) {
-    const element = document.createElement(tag);
-    if (className) element.classList.add(...className);
-    return element;
-  }
-
-  _getElement(selector) {
-    return document.querySelector(selector);
-  }
-
-  //--------------------------gradeboook interface---------------------------
 
   createHeader() {
-    const header = this._createElement("div", "gradebook-header");
-    const title = this._createElement("div", "gradebook-title");
+    const header = Utils.createElement("div", "gradebook-header");
+    const title = Utils.createElement("div", "gradebook-title");
     title.textContent = "Gradebook";
-
     const newStudentArea = this.createHeaderInputArea();
-
     header.append(title, newStudentArea);
     return header;
   }
 
   createHeaderInputArea() {
-    const inputArea = this._createElement("div", "new-student-wrapper");
+    const inputArea = Utils.createElement("div", "new-student-wrapper");
 
-    this.newStudentInput = this._createElement("input", "new-student-input");
+    this.newStudentInput = Utils.createElement("input", "new-student-input");
     this.newStudentInput.placeholder = "Add new student";
     this.newStudentInput.type = "text";
 
-    this.newBtn = this._createElement("button", "new-student-btn");
+    this.newBtn = Utils.createElement("button", "new-student-btn");
     this.newBtn.textContent = "New student";
     this.newBtn.disabled = true;
 
@@ -66,16 +48,14 @@ class GradebookView {
     return inputArea;
   }
 
-  createTable(headerData, tableClass) {
-    const table = this._createElement("table", tableClass);
-    const tHead = table.createTHead();
-    const row = tHead.insertRow(0);
-    for (let i = 0; i < headerData.length; i++) {
-      const cell = row.insertCell(i);
-      cell.outerHTML = `<th class="${headerData[i][1] || ""}">${headerData[i][0]}</th>`;
-    }
-    table.createTBody();
-    return table;
+  createTable() {
+    this.gradebookTable = new Table(
+      [["Name", "name sortable"], ["Average", "average-grade sortable"], ["Grades"], ["Delete"]],
+      "students-table"
+    );
+    const tableWrapper = Utils.createElement("div", "students-table-wrapper");
+    tableWrapper.append(this.gradebookTable.table);
+    return tableWrapper;
   }
 
   addPopup() {
@@ -85,31 +65,33 @@ class GradebookView {
 
   //----------------------students table---------------------
   displayStudents(students) {
-    this.gradebookTable.tBodies[0].innerHTML = "";
-    students.forEach((student) => this.addStudentRow(student));
+    this.gradebookTable.removeAllRows();
+    students.forEach((student) => this.addStudentToTable(student));
   }
 
-  addStudentRow(student) {
-    const row = this.gradebookTable.tBodies[0].insertRow(-1);
-    row.setAttribute("data-id", `${student.id}`);
+  addStudentToTable(student) {
+    const averageGrade = Utils.createElement("div");
+    averageGrade.textContent = student.averageGrade != 0 ? student.averageGrade : "-";
+    averageGrade.id = `average_${student.id}`;
 
-    row.insertCell(0).textContent = student.name;
-    const averageCell = row.insertCell(1);
-    averageCell.textContent = student.averageGrade != 0 ? student.averageGrade : "-";
-    averageCell.id = `average_${student.id}`;
-
-    const editBtn = this._createElement("button", "edit-btn");
+    const editBtn = Utils.createElement("button", "edit-btn");
     editBtn.setAttribute("data-id", `${student.id}`);
     editBtn.innerHTML = '<i class="fa-regular fa-eye"></i> / <i class="fa-solid fa-user-pen"></i>';
-    row.insertCell(2).appendChild(editBtn);
-    const deleteBtn = this._createElement("button", "delete-btn", "student");
+
+    const deleteBtn = Utils.createElement("button", "delete-btn", "student");
     deleteBtn.setAttribute("data-id", `${student.id}`);
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
-    row.insertCell(3).appendChild(deleteBtn);
+
+    this.gradebookTable.addRow(student.id, [student.name, averageGrade, editBtn, deleteBtn]);
   }
 
-  removeStudentRow(id) {
-    this._getElement(`tr[data-id="${id}"]`).remove();
+  removeStudentFromTable(id) {
+    this.gradebookTable.removeRow(id);
+  }
+
+  updateGradebookAverageGrade(studentID, averageGrade) {
+    const cellToEdit = document.getElementById(`average_${studentID}`);
+    cellToEdit.textContent = averageGrade != 0 ? averageGrade : "-";
   }
 
   clearStudentInput() {
@@ -124,12 +106,10 @@ class GradebookView {
     this.popup.addGradesToTable(student.grades);
   }
 
-  updateAverageGrade(studentID, averageGrade) {
-    const grade = averageGrade != 0 ? averageGrade : "-";
-    this.popup.showAverageGrade(grade);
-    const cellToEdit = document.getElementById(`average_${studentID}`);
-    cellToEdit.textContent = grade;
+  updatePopupAverageGrade(averageGrade) {
+    this.popup.showAverageGrade(averageGrade != 0 ? averageGrade : "-");
   }
+
   addGradeToTable(grade, id) {
     this.popup.addGradeToTable(grade, id);
   }
@@ -151,7 +131,6 @@ class GradebookView {
   onKeyUp(e) {
     if (e.key === "Escape" && !this.popup.overlayBackground.classList.contains("hide")) {
       this.popup.clearPopupData();
-
       this.popup.popupToggle();
     } else if (e.key === "Enter" && this.popup.newGradeInput.value && this.popup.newGradeInput.validity.valid) {
       this.onNewGradeButtonClick();
@@ -176,7 +155,7 @@ class GradebookView {
         break;
       case e.target.classList.contains("edit-btn"):
         this.popup.popupToggle();
-        this.popup.frame.tabIndex = "0"; //bug fix
+        this.popup.frame.tabIndex = "0";
         this.shownStudent = e.target.getAttribute("data-id");
         this.fillPopup(this.getStudent(this.shownStudent));
         break;
@@ -188,12 +167,12 @@ class GradebookView {
         this.onNewGradeButtonClick();
         break;
       case e.target.classList.contains("name") && e.target.classList.contains("sortable"):
-        this.displayStudents(this.getStudentsSortedByName(Table.setSortType(e.target)));
-        Table.resetArrows(this._getElement(".average-grade"));
+        this.displayStudents(this.getStudentsSortedByNameHandler(Table.setSortType(e.target)));
+        Table.resetArrows(Utils.getElement(".average-grade"));
         break;
       case e.target.classList.contains("average-grade") && e.target.classList.contains("sortable"):
-        this.displayStudents(this.getStudentsSortedByGrade(Table.setSortType(e.target)));
-        Table.resetArrows(this._getElement(".name"));
+        this.displayStudents(this.getStudentsSortedByGradeHandler(Table.setSortType(e.target)));
+        Table.resetArrows(Utils.getElement(".name"));
         break;
       case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
         this.popup.clearTableData();
@@ -213,7 +192,6 @@ class GradebookView {
   }
 
   // ------------------------handlers------------------------
-
   bindAddStudent(handler) {
     this.addStudentHandler = handler;
   }
@@ -224,10 +202,10 @@ class GradebookView {
     this.getStudent = handler;
   }
   bindGetStudentsSortedByName(handler) {
-    this.getStudentsSortedByName = handler;
+    this.getStudentsSortedByNameHandler = handler;
   }
   bindGetStudentsSortedByGrade(handler) {
-    this.getStudentsSortedByGrade = handler;
+    this.getStudentsSortedByGradeHandler = handler;
   }
   bindGetSortedGrades(handler) {
     this.getSortedGrades = handler;
