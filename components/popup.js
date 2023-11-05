@@ -13,9 +13,7 @@ export class Popup {
   }
 
   addPopupElements(elements) {
-    console.log(elements);
     elements.forEach((element) => {
-      console.log(element);
       this.frame.appendChild(element);
     });
   }

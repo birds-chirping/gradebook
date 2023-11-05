@@ -78,4 +78,4 @@ class Controller {
 }
 
 const app = new Controller(studentsData);
-console.log(app);
+// console.log(app);
