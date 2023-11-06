@@ -1,6 +1,7 @@
 import { GradesPopup } from "./grades-popup.js";
 import { Table } from "../components/table.js";
 import { Elements } from "../utils/utils.js";
+import { AlertPopup } from "./alert-popup.js";
 
 class GradebookView {
   parentContainer;
@@ -9,7 +10,8 @@ class GradebookView {
   newStudentInput;
   newBtn;
   shownStudent;
-  popup;
+  gradesPopup;
+  alertPopup;
 
   constructor(parentContainer) {
     this.parentContainer = parentContainer;
@@ -20,7 +22,8 @@ class GradebookView {
     this.gradebookContainer = Elements.createElement("div", "gradebook");
     this.gradebookContainer.append(this.createHeader(), this.createTable());
     this.parentContainer.appendChild(this.gradebookContainer);
-    this.addPopup();
+    this.addGradesPopup();
+    this.addAlertPopup();
     this.addEvents();
   }
 
@@ -58,9 +61,14 @@ class GradebookView {
     return tableWrapper;
   }
 
-  addPopup() {
-    this.popup = new GradesPopup();
-    this.gradebookContainer.append(this.popup.overlayBackground, this.popup.frame);
+  addGradesPopup() {
+    this.gradesPopup = new GradesPopup("grades-popup");
+    this.gradesPopup.addTo(this.gradebookContainer);
+  }
+
+  addAlertPopup() {
+    this.alertPopup = new AlertPopup("alert-popup");
+    this.alertPopup.addTo(this.gradebookContainer);
   }
 
   //----------------------students table---------------------
@@ -101,35 +109,35 @@ class GradebookView {
 
   //-----------------------popup--------------------------
   fillPopup(student) {
-    this.popup.showStudentName(student.name);
-    this.popup.showAverageGrade(student.averageGrade != 0 ? student.averageGrade : "-");
-    this.popup.addGradesToTable(student.grades);
+    this.gradesPopup.showStudentName(student.name);
+    this.gradesPopup.showAverageGrade(student.averageGrade != 0 ? student.averageGrade : "-");
+    this.gradesPopup.addGradesToTable(student.grades);
   }
 
   updatePopupAverageGrade(averageGrade) {
-    this.popup.showAverageGrade(averageGrade != 0 ? averageGrade : "-");
+    this.gradesPopup.showAverageGrade(averageGrade != 0 ? averageGrade : "-");
   }
 
   addGradeToTable(grade, id) {
-    this.popup.addGradeToTable(grade, id);
+    this.gradesPopup.addGradeToTable(grade, id);
   }
   removeGradeFromTable(id) {
-    this.popup.removeGradeFromTable(id);
+    this.gradesPopup.removeGradeFromTable(id);
   }
 
   //------------------------events-----------------------
   addEvents() {
     this.newStudentInput.addEventListener("input", this.onType.bind(this, this.newBtn, this.newStudentInput));
-    this.popup.newGradeInput.addEventListener(
+    this.gradesPopup.newGradeInput.addEventListener(
       "input",
-      this.onType.bind(this, this.popup.newGradeBtn, this.popup.newGradeInput)
+      this.onType.bind(this, this.gradesPopup.newGradeBtn, this.gradesPopup.newGradeInput)
     );
     document.addEventListener("click", this.onClick.bind(this));
     this.gradebookContainer.addEventListener("keyup", this.onKeyUp.bind(this));
   }
 
   onKeyUp(e) {
-    if (e.key === "Enter" && this.popup.newGradeInput.value && this.popup.newGradeInput.validity.valid) {
+    if (e.key === "Enter" && this.gradesPopup.newGradeInput.value && this.gradesPopup.newGradeInput.validity.valid) {
       this.onNewGradeButtonClick();
     } else if (e.key === "Enter" && this.newStudentInput.value.trim().length !== 0) {
       this.onNewStudentBtnClick();
@@ -146,13 +154,19 @@ class GradebookView {
         this.onNewStudentBtnClick();
         break;
       case e.target.classList.contains("delete-btn"):
-        if (e.target.classList.contains("student")) this.removeStudentHandler(e.target.getAttribute("data-id"));
-        else if (e.target.classList.contains("grade"))
-          this.removeGradeHandler(this.shownStudent, e.target.id.split("_")[1]);
+        if (e.target.classList.contains("student")) {
+          const student = this.getStudent(e.target.getAttribute("data-id"));
+          this.alertPopup.alert(`Are you sure you want to remove ${student.name} from gradebook?`);
+          this.alertPopup.bindAction(this.removeStudentHandler, student.id.toString());
+        } else if (e.target.classList.contains("grade")) {
+          const gradeID = e.target.id.split("_")[1];
+          this.alertPopup.alert(`Are you sure you want to remove this grade?`);
+          this.alertPopup.bindAction(this.removeGradeHandler, this.shownStudent, gradeID);
+        }
         break;
       case e.target.classList.contains("edit-btn"):
-        this.popup.popupToggle();
-        this.popup.frame.tabIndex = "0";
+        this.gradesPopup.popupToggle();
+        this.gradesPopup.frame.tabIndex = "0";
         this.shownStudent = e.target.getAttribute("data-id");
         this.fillPopup(this.getStudent(this.shownStudent));
         break;
@@ -168,8 +182,8 @@ class GradebookView {
         Table.resetArrows(Elements.getElement(".name"));
         break;
       case e.target.classList.contains("grades") && e.target.classList.contains("sortable"):
-        this.popup.clearTableData();
-        this.popup.addGradesToTable(this.getSortedGrades(this.shownStudent, Table.setSortType(e.target)));
+        this.gradesPopup.clearTableData();
+        this.gradesPopup.addGradesToTable(this.getSortedGrades(this.shownStudent, Table.setSortType(e.target)));
         break;
     }
   }
@@ -180,8 +194,8 @@ class GradebookView {
   }
 
   onNewGradeButtonClick() {
-    this.addGradeHandler(this.shownStudent, this.popup.newGradeInput.value);
-    this.popup.clearGradesInput();
+    this.addGradeHandler(this.shownStudent, this.gradesPopup.newGradeInput.value);
+    this.gradesPopup.clearGradesInput();
   }
 
   // ------------------------handlers------------------------

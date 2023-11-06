@@ -9,14 +9,9 @@ export class GradesPopup extends Popup {
   newGradeBtn;
   gradesTable;
 
-  constructor() {
-    super();
-    this.addPopupElements([
-      this.addStudentName(),
-      this.addStudentAverageGrade(),
-      this.addInput(),
-      this.addGradesTable(),
-    ]);
+  constructor(...args) {
+    super(...args);
+    this.addPopupElements(this.addStudentName(), this.addStudentAverageGrade(), this.addInput(), this.addGradesTable());
   }
 
   addStudentName() {

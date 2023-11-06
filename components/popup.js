@@ -5,21 +5,24 @@ export class Popup {
   popupCloseBtn;
   frame;
 
-  constructor() {
-    this.overlayBackground = Elements.createElement("div", "popup-overlay-background", "hide");
-    this.frame = Elements.createElement("div", "popup-frame", "hide");
+  constructor(className) {
+    this.className = className;
+    this.overlayBackground = Elements.createElement("div", "popup-overlay-background", "hide", className);
+    this.frame = Elements.createElement("div", "popup-frame", "hide", className);
     this.addCloseButton();
     this.addEvents();
   }
 
-  addPopupElements(elements) {
-    elements.forEach((element) => {
-      this.frame.appendChild(element);
-    });
+  addTo(container) {
+    container.append(this.overlayBackground, this.frame);
+  }
+
+  addPopupElements(...elements) {
+    this.frame.append(...elements);
   }
 
   addCloseButton() {
-    this.popupCloseBtn = Elements.createElement("button", "close-popup-btn");
+    this.popupCloseBtn = Elements.createElement("button", "close-popup-btn", this.className);
     this.popupCloseBtn.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
     this.frame.appendChild(this.popupCloseBtn);
   }
@@ -45,7 +48,10 @@ export class Popup {
   }
 
   onClick(e) {
-    if (e.target.classList.contains("popup-overlay-background") || e.target.classList.contains("close-popup-btn")) {
+    if (
+      e.target.classList.contains(this.className) &&
+      (e.target.classList.contains("popup-overlay-background") || e.target.classList.contains("close-popup-btn"))
+    ) {
       this.closePopup();
     }
   }

@@ -342,3 +342,8 @@ div::-webkit-scrollbar-thumb:hover {
 .hide {
   display: none;
 }
+
+/* --------------alert popup--------- */
+.alert-popup.popup-frame {
+  background-color: pink;
+}
