@@ -14,14 +14,18 @@ export class AlertPopup extends Popup {
   }
 
   createMessageContainer() {
+    const messageArea = Elements.createElement("div", "message-wrapper");
+    const iconContainer = Elements.createElement("div", "alert-icon-wrapper");
+    iconContainer.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
     this.messageContainer = Elements.createElement("div", "message-container");
-    return this.messageContainer;
+    messageArea.append(iconContainer, this.messageContainer);
+    return messageArea;
   }
 
   createInputArea() {
     const inputArea = Elements.createElement("div", "alert-popup-inputs-wrapper");
     this.yesButton = Elements.createElement("button", "yes-button");
-    this.yesButton.textContent = "Yes";
+    this.yesButton.textContent = "Delete";
 
     this.cancelButton = Elements.createElement("button", "cancel-button");
     this.cancelButton.textContent = "Cancel";
