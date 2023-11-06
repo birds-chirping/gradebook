@@ -72,7 +72,7 @@ export class GradesPopup extends Popup {
     const deleteBtn = Elements.createElement("button", "delete-btn", "grade");
     deleteBtn.id = `delButton_${id}`;
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
-    this.gradesTable.addRow(`grade_${id}`, [grade, deleteBtn]);
+    this.gradesTable.addRow(`grade_${id}`, grade, deleteBtn);
   }
   removeGradeFromTable(id) {
     this.gradesTable.removeRow(`grade_${id}`);

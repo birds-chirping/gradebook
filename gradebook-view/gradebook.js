@@ -82,7 +82,7 @@ class GradebookView {
     deleteBtn.setAttribute("data-id", `${student.id}`);
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
 
-    this.gradebookTable.addRow(student.id, [student.name, averageGrade, editBtn, deleteBtn]);
+    this.gradebookTable.addRow(student.id, student.name, averageGrade, editBtn, deleteBtn);
   }
 
   removeStudentFromTable(id) {

@@ -17,12 +17,12 @@ export class Table {
     return table;
   }
 
-  addRow(rowID, elements) {
+  addRow(rowID, ...elements) {
     const row = this.table.tBodies[0].insertRow(-1);
     row.id = rowID;
     elements.forEach((element, index) => {
       const cell = row.insertCell(index);
-      typeof element !== "object" ? (cell.textContent = element) : cell.appendChild(element);
+      element instanceof HTMLElement ? cell.appendChild(element) : (cell.textContent = element);
     });
   }
 
