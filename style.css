@@ -13,6 +13,24 @@ body {
   font-family: "Poppins", Verdana, Geneva, Tahoma, sans-serif;
 }
 
+/* ---scrollbar--- */
+div::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+div::-webkit-scrollbar-track {
+  /* background: rgb(236, 236, 236); */
+}
+div::-webkit-scrollbar-thumb {
+  background: rgb(179, 168, 202);
+  border-radius: 10px;
+}
+div::-webkit-scrollbar-thumb:hover {
+  background: rgb(199, 190, 217);
+}
+
+/* ---------------app container----------------------- */
+
 .container {
   width: 80%;
   display: flex;
@@ -25,7 +43,6 @@ body {
 
 .gradebook {
   width: 100%;
-  min-width: fit-content;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -50,7 +67,7 @@ body {
 }
 
 /* ------------input areas-------------- */
-.newgrade-input-wrapper,
+/* .newgrade-input-wrapper, */
 .new-student-wrapper {
   display: flex;
   flex-wrap: nowrap;
@@ -115,17 +132,22 @@ td {
   border: 1px solid rgb(226, 226, 226);
 }
 
-tr:hover {
-  background-color: hsl(60, 10%, 98%);
-}
-
 th {
   padding: 0.35rem 1rem;
   text-wrap: nowrap;
   background-color: rgb(251, 250, 249);
 }
 
+tr:hover {
+  background-color: hsl(60, 10%, 98%);
+}
+
 /* ------students table------ */
+.students-table-wrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
 .students-table {
   width: 100%;
   background-color: white;
@@ -149,10 +171,6 @@ th {
   border: 2px solid orange;
 }
 
-.delete-btn i {
-  font-weight: 100;
-}
-
 .delete-btn {
   height: 2.3rem;
   width: 100%;
@@ -168,6 +186,10 @@ th {
   color: rgb(255, 104, 122);
   background-color: rgb(255, 243, 245);
   border: 2px solid rgb(255, 104, 122);
+}
+
+.delete-btn i {
+  font-weight: 100;
 }
 
 /* ----------------popup------------ */
@@ -224,10 +246,10 @@ th {
 /* ----student name & average grade---- */
 .popup-average-grade-area,
 .popup-name-area {
+  align-self: flex-start;
   display: flex;
   align-items: flex-end;
   gap: 1rem;
-  align-self: flex-start;
 }
 
 .popup-name-field {
@@ -243,7 +265,10 @@ th {
 
 /* ----popup input---- */
 .newgrade-input-wrapper {
-  width: 80%;
+  width: 90%;
+  max-width: 21rem;
+  display: flex;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   gap: 0.3rem;
   margin-top: 1rem;
@@ -271,16 +296,16 @@ th {
 /* --------grades table-------- */
 .grades-table-wrapper {
   flex: 1;
-  width: 20rem;
+  width: 90%;
+  max-width: 21rem;
   margin: 1.2rem 0;
-  border: 1px solid rgb(238, 238, 238);
+  /* border: 1px solid rgb(238, 238, 238); */
   overflow-y: auto;
   scrollbar-width: thin;
 }
 
-.student-grades-table th,
-.student-grades-table td {
-  border: none;
+.student-grades-table {
+  margin-right: 2px;
 }
 
 .student-grades-table th {
@@ -288,22 +313,13 @@ th {
   top: 0;
 }
 
-.student-grades-table tbody tr {
-  border-bottom: 1px solid rgb(243, 243, 243);
+.student-grades-table th,
+.student-grades-table td {
+  border: none;
 }
 
-/* ---scrollbar--- */
-div::-webkit-scrollbar {
-  width: 8px;
-}
-div::-webkit-scrollbar-track {
-  background: rgb(236, 236, 236);
-}
-div::-webkit-scrollbar-thumb {
-  background: rgb(179, 168, 202);
-}
-div::-webkit-scrollbar-thumb:hover {
-  background: rgb(199, 190, 217);
+.student-grades-table tbody tr {
+  border-bottom: 1px solid rgb(243, 243, 243);
 }
 
 /* ------------------------------- */
@@ -408,4 +424,17 @@ div::-webkit-scrollbar-thumb:hover {
 .cancel-button:hover {
   background-color: rgb(255, 246, 230);
   border: 2px solid orange;
+}
+
+@media (max-width: 35rem) {
+  .container {
+    width: 90%;
+  }
+  .new-student-input {
+    width: 8.5rem;
+  }
+
+  .popup-frame {
+    max-width: 85%;
+  }
 }

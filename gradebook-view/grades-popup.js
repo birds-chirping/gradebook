@@ -1,4 +1,4 @@
-import { Elements } from "../utils/utils.js";
+import { Elements } from "../utils/elements.js";
 import { Table } from "../components/table.js";
 import { Popup } from "../components/popup.js";
 

@@ -1,6 +1,6 @@
 import { GradesPopup } from "./grades-popup.js";
 import { Table } from "../components/table.js";
-import { Elements } from "../utils/utils.js";
+import { Elements } from "../utils/elements.js";
 import { AlertPopup } from "./alert-popup.js";
 
 class GradebookView {

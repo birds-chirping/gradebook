@@ -1,4 +1,4 @@
-import { Elements } from "../utils/utils.js";
+import { Elements } from "../utils/elements.js";
 import { Popup } from "../components/popup.js";
 
 export class AlertPopup extends Popup {
